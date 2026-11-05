@@ -1,0 +1,74 @@
+# Validates the NSES standards repository on every pull request to main and every push to main.
+# Mark the "NSES Validation / ..." checks as required in branch protection so failures block merge.
+name: NSES Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: the workflow only reads repository contents. No secrets are used.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  standards:
+    name: Standards, profiles and imports
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Third-party actions are pinned to full commit SHAs (tag in the trailing comment).
+      # Dependabot (.github/dependabot.yml) proposes reviewed updates to these pins.
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Lint and formatting checks
+        run: npm run lint
+
+      - name: Markdown import validation
+        run: npm run validate:imports
+
+      - name: Technology profile validation
+        run: npm run validate:profiles
+
+      - name: Standards structure and documentation consistency
+        run: npm run validate:standards
+
+  tests:
+    name: Script tests (Node.js ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # Supported LTS lines; keep in sync with "engines" in package.json.
+        node: [22, 24]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Integration tests
+        run: npm run test:integration

@@ -1,0 +1,14 @@
+# NSES SonarQube example for standalone React (e.g. Vite). Copy to sonar-project.properties and adjust paths.
+# ---- NSES common settings (keep in sync with sonar-project.properties.example) ----
+sonar.projectKey=YOUR_PROJECT_KEY
+sonar.projectName=YOUR_PROJECT_NAME
+sonar.sourceEncoding=UTF-8
+# Never analyse the NSES submodule, dependencies or build output.
+sonar.exclusions=node_modules/**,.engineering/**,coverage/**,dist/**,build/**,**/*.d.ts
+# Do not put tokens in this file. Provide SONAR_TOKEN (and SONAR_HOST_URL) as CI secrets.
+# ---- React specific ----
+sonar.sources=src
+sonar.tests=src
+sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
+sonar.coverage.exclusions=src/main.tsx,**/*.stories.tsx,**/vite-env.d.ts
+sonar.javascript.lcov.reportPaths=coverage/lcov.info

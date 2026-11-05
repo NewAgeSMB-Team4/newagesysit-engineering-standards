@@ -15,7 +15,7 @@
 - Choose one actively maintained Next.js project and one NestJS API.
 - Add NSES as a pinned submodule.
 - Add concise project-specific `CLAUDE.md` / `AGENTS.md` entry points.
-- Run the baseline checker in report-only mode.
+- Run the NSES project integration checker in report-only mode (`--report`).
 - Add lint, typecheck, tests and build checks using existing project scripts.
 - Record legacy gaps; do not block all work on inherited violations.
 

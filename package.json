@@ -1,0 +1,26 @@
+{
+  "name": "newagesysit-engineering-standards",
+  "version": "1.2.0",
+  "private": true,
+  "description": "NewAgeSysIT Engineering Standards (NSES): company-wide engineering standards, technology profiles and validation tooling.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NewAgeSMB-Team4/newagesysit-engineering-standards.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate:imports": "node scripts/validate-imports.js",
+    "validate:profiles": "node scripts/validate-imports.js --all-profiles",
+    "validate:standards": "node scripts/validate-standards.js",
+    "check:project": "node scripts/check-project-compliance.js",
+    "lint": "node scripts/lint-repo.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "test:unit": "node --test \"test/unit/**/*.test.js\"",
+    "test:integration": "node --test \"test/integration/**/*.test.js\"",
+    "validate": "npm run lint && npm run validate:imports && npm run validate:profiles && npm run validate:standards && npm test"
+  }
+}

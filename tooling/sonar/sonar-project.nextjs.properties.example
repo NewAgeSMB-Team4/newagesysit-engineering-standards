@@ -1,0 +1,14 @@
+# NSES SonarQube example for Next.js. Copy to sonar-project.properties and adjust paths.
+# ---- NSES common settings (keep in sync with sonar-project.properties.example) ----
+sonar.projectKey=YOUR_PROJECT_KEY
+sonar.projectName=YOUR_PROJECT_NAME
+sonar.sourceEncoding=UTF-8
+# Do not put tokens in this file. Provide SONAR_TOKEN (and SONAR_HOST_URL) as CI secrets.
+# ---- Next.js specific ----
+# App Router projects may keep code in app/ (and src/); list what exists.
+sonar.sources=src,app
+sonar.tests=src,app,tests
+sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,tests/**
+# Never analyse the NSES submodule, dependencies or build output.
+sonar.exclusions=node_modules/**,.engineering/**,coverage/**,dist/**,.next/**,out/**,build/**,public/**,next-env.d.ts,**/*.d.ts
+sonar.javascript.lcov.reportPaths=coverage/lcov.info

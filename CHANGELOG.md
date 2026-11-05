@@ -2,6 +2,32 @@
 
 All notable changes to NSES are documented here.
 
+## [1.2.0] - Unreleased
+
+Milestone: Automated Standards Validation & Enforcement.
+
+### Added
+- `standards.manifest.json`: machine-readable declaration of supported profiles, required standards, per-profile required imports and documented cross-framework imports.
+- `npm run validate:imports`: Markdown import validator (whole repository, `--profile <name>`, `--all-profiles`, `--file <path>`). Detects missing files, directory imports, missing profiles, imports outside the repository, letter-case mismatches, sensitive-file imports, duplicate and circular imports, and chains deeper than Claude Code's import limit. Ignores imports inside code blocks, inline code and HTML comments.
+- `npm run validate:standards`: repository validator with PASS / WARNING / FAIL results for structure, semantic version and version consistency, profiles, required standards, AI templates, imports and documentation path references.
+- `npm run lint`: dependency-free syntax, JSON, YAML and Markdown hygiene checks.
+- Unit and integration tests using the built-in `node:test` runner (no dependencies).
+- `.github/workflows/nses-validate.yml`: pull request and `main` validation with least-privilege permissions and SHA-pinned actions; `.github/dependabot.yml` keeps action pins current.
+- Shared tooling layers: common + Next.js / NestJS / React configurations for ESLint (flat config), TypeScript and Sonar, plus a shared Prettier configuration, with integration guides.
+- `scripts/README.md` documenting every command, result code and exit code.
+
+### Changed
+- `scripts/check-project-compliance.js` replaces the `.mjs` checker and accepts a project path (`node scripts/check-project-compliance.js /path/to/project`). It now detects the technology stack, NSES submodule, pinned version/tag, CLAUDE.md and AGENTS.md integration, referenced profiles (including nested import validation), and recommended quality tooling. It never reads `.env` or credential files, never prints file contents, redacts credentials in submodule URLs and does not modify or execute anything in the target project.
+- Example CI workflows in `tooling/ci/` pin actions to full commit SHAs and call the new checker path.
+- `tooling/typescript/tsconfig.strict.example.json` became `tooling/typescript/tsconfig.base.json`, which projects can `extend` directly.
+- `tooling/eslint/examples/eslint.config.mjs` was replaced by per-framework examples.
+- README now uses the actual GitHub organisation in the submodule URL.
+
+### Migration notes
+- `scripts/check-project-compliance.mjs` still works and forwards to the new script; update CI to the `.js` path when convenient.
+- The checker now reports **FAIL** for missing NSES integration (for example, no ENTRY.md import). Keep `--report` in CI during adoption to stay non-blocking, then remove it to enforce.
+- Projects that copied `tsconfig.strict.example.json` are unaffected; to adopt the shared base, use `"extends": "./.engineering/standards/tooling/typescript/tsconfig.base.json"`.
+
 ## [1.1.0] - 2026-11-05
 
 ### Added

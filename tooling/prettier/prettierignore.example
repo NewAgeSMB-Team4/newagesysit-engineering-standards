@@ -1,0 +1,12 @@
+# Copy to .prettierignore in the project root.
+node_modules/
+coverage/
+dist/
+build/
+out/
+.next/
+.engineering/
+*.min.js
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
