@@ -1,6 +1,6 @@
 # NSES — NewAgeSysIT Engineering Standards
 
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Status:** Initial baseline  
 **Distribution:** Git submodule  
 **Initial scope:** Next.js, NestJS, React, TypeScript, Node.js
@@ -38,9 +38,11 @@ NSES is the shared engineering baseline for designing, building, reviewing, secu
 - `ENTRY.md`: central index that directs projects to the matching technology profile.
 - `profiles/`: technology-specific entry points for Next.js, NestJS and React; each profile imports the applicable detailed standards.
 - `ai-instructions/`: reusable Claude Code and AGENTS project instruction templates.
-- `tooling/`: example shared lint/typecheck/CI configurations.
+- `tooling/`: shared ESLint, TypeScript, Prettier, SonarQube and CI configuration (common + framework layers); see `tooling/README.md`.
 - `templates/`: reusable PR, exception and design templates.
-- `scripts/`: lightweight repository/project compliance checks.
+- `scripts/`: standards validators and the project integration checker; see `scripts/README.md`.
+- `standards.manifest.json`: machine-readable declaration of profiles and required standards used by the validators.
+- `test/`: unit and integration tests for the scripts.
 - `adoption/`: rollout and versioning procedures.
 
 ## Consume from a project
@@ -48,9 +50,9 @@ NSES is the shared engineering baseline for designing, building, reviewing, secu
 From the project root:
 
 ```bash
-git submodule add https://github.com/<ORG>/newagesysit-engineering-standards.git .engineering/standards
+git submodule add https://github.com/NewAgeSMB-Team4/newagesysit-engineering-standards.git .engineering/standards
 cd .engineering/standards
-git checkout v1.1.0
+git checkout v1.2.0
 cd ../..
 ```
 
@@ -73,13 +75,35 @@ If the submodule path differs, update the import paths in `CLAUDE.md` / `AGENTS.
 2. Add project-root `AGENTS.md` and `CLAUDE.md` using `ai-instructions/` templates.
 3. Select the matching profile (`profiles/nextjs.md`, `profiles/nestjs.md` or `profiles/react.md`) and reference it from the project-root agent instructions. The profile imports the applicable detailed standards.
 4. Configure TypeScript strictness, lint, tests and dependency scanning for that repository.
-5. Add the NSES compliance script to CI in report-only mode first; promote agreed checks to blocking gates after the pilot.
+5. Add the NSES integration check to CI in report-only mode first (`node .engineering/standards/scripts/check-project-compliance.js . --report`); remove `--report` to make it blocking after the pilot.
 6. Document project-specific architecture, commands, data classification and exceptions locally.
 
 ## Scope and tailoring
 
 Existing repositories may have legacy constraints. Apply MUST controls to new/changed code first, then plan remediation of inherited issues. Never claim a project is compliant solely because its agent file imports NSES. Compliance requires actual automated evidence and review.
 
+## Validating NSES itself
+
+Every pull request to `main` runs `.github/workflows/nses-validate.yml`, which must pass before merge. Run the same checks locally with Node.js 22+ (no dependencies to install):
+
+```bash
+npm run validate          # lint, imports, profiles, standards structure and all tests
+npm run validate:imports -- --profile nextjs
+npm run validate:standards
+```
+
+When you add or rename a standard or profile, update `standards.manifest.json` in the same PR. See `scripts/README.md` for every check and result code.
+
+## Checking a consuming project
+
+```bash
+node .engineering/standards/scripts/check-project-compliance.js /path/to/project
+```
+
+This reports how the project integrates NSES (submodule, pinned version, CLAUDE.md / AGENTS.md, profile for the detected stack, recommended tooling). It is read-only and never reads `.env` or credential files. It is a configuration check, not a security or code-quality audit.
+
 ## Release
 
 See `VERSION`, `CHANGELOG.md` and `adoption/versioning-and-governance.md`. Use semantic versioning. Every release should include a migration note when rules or tooling change.
+
+Before tagging, set the CHANGELOG date for the release, bump `VERSION`, `package.json`, `README.md` and `ENTRY.md` together (`npm run validate:standards` fails if they disagree), and confirm the validation workflow passes on `main`.

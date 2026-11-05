@@ -1,26 +1,47 @@
-# Example workflow. Copy to .github/workflows/quality.yml and adapt scripts.
+# Example workflow for a consuming project. Copy to .github/workflows/quality.yml and adapt the scripts.
+# Actions are pinned to full commit SHAs (tag in the trailing comment); enable Dependabot for the
+# github-actions ecosystem so pins are updated through reviewed pull requests.
 name: Quality
 on:
   pull_request:
+    branches: [main]
   push:
     branches: [main]
 permissions:
   contents: read
 jobs:
   quality:
+    name: Lint, typecheck, test and build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
-      - uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run lint --if-present
       - run: npm run typecheck --if-present
       - run: npm test --if-present
       - run: npm run build --if-present
-      - name: NSES project baseline check
-        run: node .engineering/standards/scripts/check-project-compliance.mjs --report
+
+  nses:
+    name: NSES integration check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      # Configuration check only (not a security audit). Keep --report during adoption;
+      # remove it to make missing NSES integration block the pull request.
+      - name: NSES project integration check
+        run: node .engineering/standards/scripts/check-project-compliance.js . --report

@@ -1,0 +1,108 @@
+{
+  "$comment": "Machine-readable description of the NSES repository structure. Used by scripts/validate-imports.js, scripts/validate-standards.js and scripts/check-project-compliance.js. Update this file in the same PR as any structural change to the standards.",
+  "schemaVersion": 1,
+  "consumerMountPath": ".engineering/standards",
+  "repositoryUrlPattern": "newagesysit-engineering-standards",
+  "maxImportDepth": 5,
+  "requiredRootFiles": ["ENTRY.md", "README.md", "CHANGELOG.md", "VERSION"],
+  "versionedDocuments": ["README.md", "ENTRY.md"],
+  "ignore": [".git", "node_modules", "coverage", "dist", ".next", "test/fixtures"],
+  "docReferenceExclusions": ["CHANGELOG.md"],
+  "projectLevelFileNames": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    ".env.example",
+    "package.json",
+    "tsconfig.json",
+    "sonar-project.properties",
+    "eslint.config.mjs",
+    "prettier.config.mjs",
+    ".prettierignore",
+    ".gitmodules",
+    ".git-blame-ignore-revs"
+  ],
+  "templateFiles": {
+    "ai-instructions/CLAUDE.md": { "mountPath": ".engineering/standards" },
+    "ai-instructions/AGENTS.md": { "mountPath": ".engineering/standards" }
+  },
+  "requiredStandards": {
+    "core": [
+      "core/coding-principles.md",
+      "core/clean-code.md",
+      "core/naming-conventions.md",
+      "core/error-handling.md",
+      "core/documentation.md",
+      "core/code-review.md",
+      "core/logging-observability.md"
+    ],
+    "architecture": [
+      "architecture/modular-architecture.md",
+      "architecture/component-design.md",
+      "architecture/data-access.md",
+      "architecture/api-design.md"
+    ],
+    "security": [
+      "security/security-baseline.md",
+      "security/input-validation.md",
+      "security/authentication-authorization.md",
+      "security/data-protection.md",
+      "security/dependency-security.md"
+    ],
+    "performance": ["performance/performance-standards.md"],
+    "quality": ["quality/testing-standards.md", "quality/test-types.md"],
+    "aiInstructions": [
+      "ai-instructions/CLAUDE.md",
+      "ai-instructions/AGENTS.md",
+      "ai-instructions/code-review-prompt.md"
+    ],
+    "templates": [
+      "templates/exception-request.md",
+      "templates/pull-request-template.md",
+      "templates/architecture-decision-record.md"
+    ]
+  },
+  "profileBaseline": [
+    "core/coding-principles.md",
+    "core/error-handling.md",
+    "security/security-baseline.md",
+    "security/input-validation.md",
+    "security/data-protection.md",
+    "quality/testing-standards.md"
+  ],
+  "profiles": {
+    "nextjs": {
+      "file": "profiles/nextjs.md",
+      "displayName": "Next.js",
+      "frameworkDirs": ["frameworks/nextjs"],
+      "detect": { "dependencies": ["next"] },
+      "requiredImports": ["frameworks/nextjs/instructions.md"],
+      "allowedCrossFrameworkImports": [
+        {
+          "path": "frameworks/react/instructions.md",
+          "reason": "Next.js applications are React applications; the Next.js profile intentionally includes the React standards (see ENTRY.md section 2)."
+        },
+        {
+          "path": "frameworks/react/component-design.md",
+          "reason": "Next.js applications are React applications; the Next.js profile intentionally includes the React standards (see ENTRY.md section 2)."
+        }
+      ]
+    },
+    "nestjs": {
+      "file": "profiles/nestjs.md",
+      "displayName": "NestJS",
+      "frameworkDirs": ["frameworks/nestjs"],
+      "detect": { "dependencies": ["@nestjs/core"] },
+      "requiredImports": ["frameworks/nestjs/instructions.md"],
+      "allowedCrossFrameworkImports": []
+    },
+    "react": {
+      "file": "profiles/react.md",
+      "displayName": "React",
+      "frameworkDirs": ["frameworks/react"],
+      "detect": { "dependencies": ["react"], "excludeIfDependencies": ["next"] },
+      "requiredImports": ["frameworks/react/instructions.md"],
+      "allowedCrossFrameworkImports": []
+    }
+  }
+}

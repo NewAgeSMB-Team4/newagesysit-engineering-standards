@@ -1,0 +1,15 @@
+# NSES SonarQube example for NestJS. Copy to sonar-project.properties and adjust paths.
+# ---- NSES common settings (keep in sync with sonar-project.properties.example) ----
+sonar.projectKey=YOUR_PROJECT_KEY
+sonar.projectName=YOUR_PROJECT_NAME
+sonar.sourceEncoding=UTF-8
+# Never analyse the NSES submodule, dependencies or build output.
+sonar.exclusions=node_modules/**,.engineering/**,coverage/**,dist/**,build/**,**/*.d.ts
+# Do not put tokens in this file. Provide SONAR_TOKEN (and SONAR_HOST_URL) as CI secrets.
+# ---- NestJS specific ----
+sonar.sources=src
+sonar.tests=src,test
+sonar.test.inclusions=**/*.spec.ts,test/**/*.e2e-spec.ts
+# Module wiring and bootstrap are exercised by e2e tests rather than unit coverage.
+sonar.coverage.exclusions=src/main.ts,**/*.module.ts,**/*.dto.ts,**/migrations/**
+sonar.javascript.lcov.reportPaths=coverage/lcov.info

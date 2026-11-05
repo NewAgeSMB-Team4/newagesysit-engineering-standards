@@ -1,10 +1,14 @@
-# Copy to sonar-project.properties and set project-specific values.
+# NSES common SonarQube configuration. Copy to sonar-project.properties in the project root
+# and set project-specific values. Framework-specific examples in this directory extend this block.
+# ---- NSES common settings (keep in sync with sonar-project.properties.example) ----
 sonar.projectKey=YOUR_PROJECT_KEY
 sonar.projectName=YOUR_PROJECT_NAME
+sonar.sourceEncoding=UTF-8
+# Never analyse the NSES submodule, dependencies or build output.
+sonar.exclusions=node_modules/**,.engineering/**,coverage/**,dist/**,build/**,**/*.d.ts
+# Do not put tokens in this file. Provide SONAR_TOKEN (and SONAR_HOST_URL) as CI secrets.
 sonar.sources=src
 sonar.tests=src
 sonar.test.inclusions=**/*.spec.ts,**/*.test.ts,**/*.spec.tsx,**/*.test.tsx
-sonar.exclusions=node_modules/**,.next/**,dist/**,coverage/**
-sonar.sourceEncoding=UTF-8
-# Configure coverage report paths to match the project's test runner.
-# sonar.javascript.lcov.reportPaths=coverage/lcov.info
+# Coverage report path for the project's test runner (Jest/Vitest lcov reporter).
+sonar.javascript.lcov.reportPaths=coverage/lcov.info

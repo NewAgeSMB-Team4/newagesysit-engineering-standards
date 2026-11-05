@@ -9,6 +9,8 @@
 - [ ] Ensure lint, typecheck, test and build scripts exist and run in CI.
 - [ ] Enable secret and dependency scanning.
 - [ ] Add PR template and branch protection.
-- [ ] Run NSES checker in report-only mode; triage warnings.
+- [ ] Run `node .engineering/standards/scripts/check-project-compliance.js . --report`; fix FAIL results and triage warnings.
+- [ ] Adopt the shared tooling layers where practical (see `tooling/README.md`).
+- [ ] Add the NSES integration check to CI (see `tooling/ci/github-actions-quality.yml`); remove `--report` once clean.
 - [ ] Record approved exceptions with expiry.
 - [ ] Review onboarding with the framework maintainer.
