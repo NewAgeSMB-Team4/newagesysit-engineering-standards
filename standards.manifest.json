@@ -68,6 +68,7 @@
     "security/security-baseline.md",
     "security/input-validation.md",
     "security/data-protection.md",
+    "security/dependency-security.md",
     "quality/testing-standards.md"
   ],
   "profiles": {
@@ -76,7 +77,7 @@
       "displayName": "Next.js",
       "frameworkDirs": ["frameworks/nextjs"],
       "detect": { "dependencies": ["next"] },
-      "requiredImports": ["frameworks/nextjs/instructions.md"],
+      "requiredImports": ["frameworks/nextjs/instructions.md", "core/logging-observability.md"],
       "allowedCrossFrameworkImports": [
         {
           "path": "frameworks/react/instructions.md",
@@ -93,7 +94,7 @@
       "displayName": "NestJS",
       "frameworkDirs": ["frameworks/nestjs"],
       "detect": { "dependencies": ["@nestjs/core"] },
-      "requiredImports": ["frameworks/nestjs/instructions.md"],
+      "requiredImports": ["frameworks/nestjs/instructions.md", "core/logging-observability.md"],
       "allowedCrossFrameworkImports": []
     },
     "react": {

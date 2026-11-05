@@ -16,7 +16,8 @@ function validateMutated(mutate) {
 
 const replaceIn = (root, file, from, to) => {
   const abs = path.join(root, file);
-  fs.writeFileSync(abs, fs.readFileSync(abs, 'utf8').replace(from, to));
+  // Normalise to LF first so string patterns containing '\n' match on CRLF checkouts too.
+  fs.writeFileSync(abs, fs.readFileSync(abs, 'utf8').replace(/\r\n/g, '\n').replace(from, to));
 };
 
 describe('validate-standards on the NSES repository', () => {

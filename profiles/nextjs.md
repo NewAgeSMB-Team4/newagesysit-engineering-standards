@@ -11,6 +11,7 @@ This profile imports the shared baseline and the detailed standards relevant to 
 @../core/naming-conventions.md
 @../core/error-handling.md
 @../core/documentation.md
+@../core/logging-observability.md
 
 ## Architecture standards
 

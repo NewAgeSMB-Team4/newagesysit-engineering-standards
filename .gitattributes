@@ -1,0 +1,2 @@
+# Normalise line endings: the validators, tests and YAML/Markdown tooling expect LF on every OS.
+* text=auto eol=lf
