@@ -21,6 +21,7 @@ For Next.js applications, use `profiles/nextjs.md`, which also imports the relev
 @../security/security-baseline.md
 @../security/input-validation.md
 @../security/data-protection.md
+@../security/dependency-security.md
 
 ## Performance standards
 

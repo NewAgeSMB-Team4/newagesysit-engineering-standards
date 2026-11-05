@@ -2,7 +2,7 @@
 
 All notable changes to NSES are documented here.
 
-## [1.2.0] - Unreleased
+## [1.2.0] - 2026-11-05
 
 Milestone: Automated Standards Validation & Enforcement.
 
@@ -22,6 +22,8 @@ Milestone: Automated Standards Validation & Enforcement.
 - `tooling/typescript/tsconfig.strict.example.json` became `tooling/typescript/tsconfig.base.json`, which projects can `extend` directly.
 - `tooling/eslint/examples/eslint.config.mjs` was replaced by per-framework examples.
 - README now uses the actual GitHub organisation in the submodule URL.
+- `profiles/react.md` now imports `security/dependency-security.md`; dependency security is part of the baseline for every profile.
+- `profiles/nextjs.md` now imports `core/logging-observability.md`, matching the NestJS profile (server-side Route Handlers, Server Actions and middleware need structured, redacted logging).
 
 ### Migration notes
 - `scripts/check-project-compliance.mjs` still works and forwards to the new script; update CI to the `.js` path when convenient.
