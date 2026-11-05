@@ -1,0 +1,4 @@
+# Example Semgrep ruleset configuration for CI. Pin the Semgrep CLI/action version in your pipeline.
+# Start with maintained community rulesets, then add organization-specific rules after tuning false positives.
+# Example CLI: semgrep scan --config p/default --config p/owasp-top-ten --error
+# Do not treat a clean scan as proof that the application is secure.
