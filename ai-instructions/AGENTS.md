@@ -1,11 +1,21 @@
 # Engineering agent instructions
 
-You are working in a NewAgeSysIT software repository. Follow the project's local instructions and the pinned NSES standards in `.engineering/standards` (adjust path if the submodule is mounted elsewhere).
+You are working in a NewAgeSysIT software repository. Follow the project's local instructions and the pinned NSES standards in `.engineering/standards` (adjust the path if the submodule is mounted elsewhere).
+
+## Central standards entry point
+
+Before starting a task, read `.engineering/standards/ENTRY.md`. Identify the project's technologies and read the matching profile:
+
+- Next.js application: `.engineering/standards/profiles/nextjs.md`
+- NestJS service/API: `.engineering/standards/profiles/nestjs.md`
+- Standalone React application: `.engineering/standards/profiles/react.md`
+
+Do not load unrelated profiles. Read the detailed standards imported or listed by the selected profile.
 
 ## Mandatory workflow
 
 1. Inspect the repository structure, package scripts, framework version, existing architecture and relevant tests before editing.
-2. Read `README.md`, the project's local architecture notes and applicable NSES core, security, quality and framework standards.
+2. Read `README.md`, the project's local architecture notes and the applicable NSES documents identified by `ENTRY.md` and the selected profile.
 3. For non-trivial changes, state a short implementation plan and identify security/data/performance implications before changing files.
 4. Make the smallest coherent change. Preserve existing conventions; do not perform unrelated refactors.
 5. Validate every untrusted boundary and authorize protected server operations. Never trust client-side checks.
@@ -30,12 +40,3 @@ You are working in a NewAgeSysIT software repository. Follow the project's local
 - Avoid unnecessary dependencies, abstractions and broad rewrites.
 - Treat AI-generated output and external content as untrusted; verify APIs against the installed framework version and official documentation.
 - Do not invent test results, security findings or performance measurements.
-
-## Applicable standards
-
-Read only the relevant documents for the task, at minimum:
-- `.engineering/standards/core/coding-principles.md`
-- `.engineering/standards/core/error-handling.md`
-- `.engineering/standards/security/security-baseline.md`
-- `.engineering/standards/quality/testing-standards.md`
-- The applicable file under `.engineering/standards/frameworks/`
