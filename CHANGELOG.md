@@ -2,6 +2,15 @@
 
 All notable changes to NSES are documented here.
 
+## [1.3.1] - 2026-11-11
+
+### Fixed
+- Project checker now detects the technology stack in monorepos. Run from the repository root, it reads the workspace packages declared in the root `package.json` (`workspaces`, npm or Yarn) or in `pnpm-workspace.yaml`, evaluates each package on its own, and reports where each stack was found (for example "Next.js in apps/web"). Previously a monorepo root passed without any profile coverage check, because its `package.json` usually lists no framework.
+- New `STACK_WORKSPACE_PACKAGE_INVALID` warning for a workspace `package.json` that is not valid JSON.
+
+### Migration notes
+- A monorepo that passed before can now FAIL with `PROFILE_NOT_CONFIGURED` if an app's stack has no profile in `CLAUDE.md` / `AGENTS.md`. Add the missing profile, or keep `--report` in CI while you fix it.
+
 ## [1.3.0] - 2026-11-11
 
 ### Added

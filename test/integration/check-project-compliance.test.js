@@ -40,6 +40,52 @@ describe('check-project-compliance: correctly integrated projects', () => {
   });
 });
 
+describe('check-project-compliance: monorepos', () => {
+  const mount = '.engineering/standards';
+  const monorepo = (rootPkg, extra = {}) => {
+    const project = createProject('nextjs', {
+      files: {
+        'package.json': JSON.stringify({ name: 'mono', private: true, scripts: { lint: 'x', typecheck: 'x', test: 'x', build: 'x' }, devDependencies: { turbo: '2' }, ...rootPkg }),
+        'apps/web/package.json': JSON.stringify({ dependencies: { next: '16.0.0', react: '19.2.0' } }),
+        'apps/api/package.json': JSON.stringify({ dependencies: { '@nestjs/core': '11.1.0' } }),
+        'packages/ui/package.json': JSON.stringify({ peerDependencies: { react: '19.2.0' } }),
+        'CLAUDE.md': `# Mono\n\n@${mount}/ENTRY.md\n@${mount}/profiles/nextjs.md\n@${mount}/profiles/nestjs.md\n@${mount}/profiles/react.md\n`,
+        'AGENTS.md': `Read \`${mount}/ENTRY.md\`, \`${mount}/profiles/nextjs.md\`, \`${mount}/profiles/nestjs.md\` and \`${mount}/profiles/react.md\`.\n`,
+        ...extra,
+      },
+    });
+    return checkProject({ projectRoot: project });
+  };
+  const detected = (report) => report.results.filter((r) => r.code === 'STACK_DETECTED').map((r) => r.message);
+
+  it('detects stacks in npm workspace packages and checks their profiles from the root', () => {
+    const report = monorepo({ workspaces: ['apps/*', 'packages/*'] });
+    const found = detected(report);
+    assert.ok(found.some((m) => m.includes('Next.js') && m.includes('apps/web')), found.join('\n'));
+    assert.ok(found.some((m) => m.includes('NestJS') && m.includes('apps/api')));
+    assert.ok(found.some((m) => m.includes('React') && m.includes('packages/ui')));
+    assert.ok(!found.some((m) => m.includes('React') && m.includes('apps/web')), 'react inside the Next.js app is not a separate stack');
+    assert.deepEqual(failCodes(report), []);
+    assert.ok(!codes(report).includes('STACK_UNKNOWN'));
+  });
+
+  it('fails when a workspace stack has no profile', () => {
+    const report = monorepo({ workspaces: { packages: ['apps/*'] } }, { 'CLAUDE.md': `@${mount}/ENTRY.md\n@${mount}/profiles/nextjs.md\n`, 'AGENTS.md': `Read \`${mount}/ENTRY.md\` and \`${mount}/profiles/nextjs.md\`.\n` });
+    assert.ok(report.results.some((r) => r.code === 'PROFILE_NOT_CONFIGURED' && r.message.includes('NestJS')));
+  });
+
+  it('reads pnpm-workspace.yaml', () => {
+    const report = monorepo({}, { 'pnpm-workspace.yaml': "packages:\n  - 'apps/*'\n  - \"packages/ui\" # shared UI\n  - '!apps/legacy'\ncatalog:\n  react: 19.2.0\n" });
+    const found = detected(report);
+    assert.ok(found.some((m) => m.includes('apps/api')) && found.some((m) => m.includes('packages/ui')), found.join('\n'));
+  });
+
+  it('warns about, and skips, an invalid workspace package.json', () => {
+    const report = monorepo({ workspaces: ['apps/*'] }, { 'apps/api/package.json': '{ broken' });
+    assert.ok(codes(report).includes('STACK_WORKSPACE_PACKAGE_INVALID'));
+  });
+});
+
 describe('check-project-compliance: integration problems', () => {
   it('fails when NSES is missing entirely', () => {
     const project = createProject('nextjs', { withNses: false, submodule: false });
