@@ -11,6 +11,7 @@
   "projectLevelFileNames": [
     "AGENTS.md",
     "CLAUDE.md",
+    ".claude/settings.json",
     "README.md",
     ".env.example",
     "package.json",

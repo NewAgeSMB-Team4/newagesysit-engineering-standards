@@ -94,7 +94,7 @@ The checker reports on the following:
   - Sonar configuration
   - CI configuration
   - Dependabot or Renovate configuration
-- **Hygiene.** It checks that `.gitignore` covers `.env` files.
+- **Hygiene.** It checks that `.gitignore` covers `.env` files, and that `.claude/settings.json` has a `permissions.deny` rule blocking Claude Code from reading `.env` files (`AI_SECRET_DENY_MISSING` or `AI_SETTINGS_INVALID` warnings otherwise; the template is `ai-instructions/claude-settings.json`).
 
 ### Safety guarantees
 

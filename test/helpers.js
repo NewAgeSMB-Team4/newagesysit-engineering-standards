@@ -100,6 +100,7 @@ export function createProject(stack, { files = {}, withNses = true, submodule = 
     '.prettierrc.json': '{}\n',
     '.gitignore': 'node_modules/\n.env\n.env.*\n!.env.example\n',
     '.github/workflows/ci.yml': 'name: CI\non: [push]\njobs: {}\n',
+    '.claude/settings.json': '{ "permissions": { "deny": ["Read(**/.env)", "Read(**/.env.*)"] } }\n',
     'CLAUDE.md': `# Project\n\n@${mount}/ENTRY.md\n@${mount}/profiles/${stack}.md\n`,
     'AGENTS.md': `# Agents\n\nRead \`${mount}/ENTRY.md\` and \`${mount}/profiles/${stack}.md\`.\n`,
     ...(submodule ? { '.gitmodules': `[submodule "${mount}"]\n\tpath = ${mount}\n\turl = https://github.com/NewAgeSMB-Team4/newagesysit-engineering-standards.git\n` } : {}),

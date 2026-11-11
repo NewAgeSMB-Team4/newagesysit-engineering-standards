@@ -95,7 +95,7 @@ describe('validate-standards detects regressions', () => {
   });
 
   it('broken documentation reference', () => {
-    const r = validateMutated((root) => replaceIn(root, 'README.md', '## Release', 'See `adoption/missing-guide.md`.\n\n## Release'));
+    const r = validateMutated((root) => replaceIn(root, 'README.md', /$/, '\nSee `adoption/missing-guide.md`.\n'));
     assert.ok(failCodes(r).includes('DOC_REFERENCE_NOT_FOUND'));
   });
 

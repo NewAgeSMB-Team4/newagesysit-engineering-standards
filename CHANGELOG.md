@@ -2,6 +2,21 @@
 
 All notable changes to NSES are documented here.
 
+## [1.3.0] - 2026-11-11
+
+### Added
+- `ai-instructions/claude-settings.json`: Claude Code `permissions.deny` template that blocks secret `.env` variants, private keys, registry tokens and cloud credentials while keeping `.env.example` / `.env.sample` / `.env.template` readable. Projects copy it to `.claude/settings.json`.
+- `ai-instructions/secret-protection.md`: per-tool setup for blocking secret files in Claude Code, Cursor, GitHub Copilot, Codex CLI, Gemini CLI and Windsurf / Devin Desktop, with each tool's limits and a verification test.
+- Gitleaks `secret-scan` job (official Docker image pinned by digest, full history, redacted output) in `tooling/ci/security.yml`; README documents local Docker and installed-binary usage.
+- `security/data-protection.md`: MUST rules for secret scanning, rotating leaked secrets and technically blocking AI assistants from secret files.
+- Project checker warns with `AI_SECRET_DENY_MISSING` / `AI_SETTINGS_INVALID` when `.claude/settings.json` does not block `.env` reads.
+
+### Changed
+- README rewritten as a step-by-step adoption guide with ready-to-paste `CLAUDE.md` / `AGENTS.md` per stack.
+
+### Migration notes
+- Existing projects get a new checker WARNING until they add `.claude/settings.json`; it never fails the run.
+
 ## [1.2.0] - 2026-11-05
 
 Milestone: Automated Standards Validation & Enforcement.
