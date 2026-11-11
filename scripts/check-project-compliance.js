@@ -402,6 +402,26 @@ function checkHygiene(ctx) {
   else report.warn('HYGIENE_GITIGNORE_ENV_MISSING', '.gitignore does not appear to ignore .env files. Ignore them and allow only placeholder .env.example files.', { section, file: '.gitignore' });
 }
 
+/** Claude Code permission deny rules are the only hard block on an agent reading secret files. */
+function checkAgentSecretAccess(ctx) {
+  const { report, read } = ctx;
+  const section = S.hygiene;
+  const file = '.claude/settings.json';
+  const raw = read(file);
+  let deny = [];
+  try {
+    deny = JSON.parse(raw ?? '{}')?.permissions?.deny ?? [];
+  } catch {
+    report.warn('AI_SETTINGS_INVALID', `${file} is not valid JSON, so Claude Code ignores its permission rules.`, { section, file });
+    return;
+  }
+  if (Array.isArray(deny) && deny.some((r) => typeof r === 'string' && /^Read\([^)]*\.env/.test(r))) {
+    report.pass('AI_SECRET_DENY', `${file} blocks Claude Code from reading .env files.`, { section, file });
+  } else {
+    report.warn('AI_SECRET_DENY_MISSING', `Claude Code is not blocked from reading .env and other secret files. Copy ai-instructions/claude-settings.json from NSES to ${file}.`, { section, file });
+  }
+}
+
 export function checkProject({ projectRoot, flags = {} }) {
   const root = path.resolve(projectRoot);
   if (!statSafe(root)?.isDirectory()) throw new UsageError(`Project directory not found: ${projectRoot}`);
@@ -425,6 +445,7 @@ export function checkProject({ projectRoot, flags = {} }) {
   checkProfileCoverage(ctx);
   checkTooling(ctx);
   checkHygiene(ctx);
+  checkAgentSecretAccess(ctx);
   return report;
 }
 

@@ -127,6 +127,21 @@ describe('check-project-compliance: integration problems', () => {
     assert.ok(!failCodes(report).some((c) => c.startsWith('TOOLING_')));
   });
 
+  it('warns when Claude Code is not blocked from reading secret files', () => {
+    const project = createProject('nextjs');
+    fs.rmSync(path.join(project, '.claude'), { recursive: true });
+    assert.ok(codes(checkProject({ projectRoot: project })).includes('AI_SECRET_DENY_MISSING'));
+    writeFiles(project, { '.claude/settings.json': '{ not json' });
+    assert.ok(codes(checkProject({ projectRoot: project })).includes('AI_SETTINGS_INVALID'));
+    assert.ok(!failCodes(checkProject({ projectRoot: project })).some((c) => c.startsWith('AI_')));
+  });
+
+  it('accepts the NSES claude-settings.json template as the secret deny list', () => {
+    const project = createProject('nestjs');
+    fs.copyFileSync(path.join(project, '.engineering/standards/ai-instructions/claude-settings.json'), path.join(project, '.claude/settings.json'));
+    assert.ok(checkProject({ projectRoot: project }).results.some((r) => r.code === 'AI_SECRET_DENY' && r.level === 'PASS'));
+  });
+
   it('honours --standards-path for a custom mount location', () => {
     const project = createProject('react', { withNses: false, submodule: false });
     fs.cpSync(path.join(createProject('react'), '.engineering/standards'), path.join(project, 'vendor/nses'), { recursive: true });
