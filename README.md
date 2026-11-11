@@ -3,7 +3,8 @@
 **Version:** 1.3.0  
 **Status:** Initial baseline  
 **Distribution:** Git submodule  
-**Supported stacks:** Next.js, NestJS, React (TypeScript / Node.js)
+**Supported stacks:** Next.js, NestJS, React (TypeScript / Node.js)  
+**Maintainer:** Krishnadas P, Tech Lead, NewAgeSysIT ([contact](#maintainer))
 
 NSES is one shared set of engineering rules for every NewAgeSysIT project. It covers how we write, structure, secure, test and review code.
 
@@ -779,7 +780,7 @@ Versioning rules are in [adoption/versioning-and-governance.md](adoption/version
 The submodule was not downloaded. Run `git submodule update --init`.
 
 **`git submodule add` asks for credentials or says "repository not found".**  
-This repository is private. Ask an NSES maintainer for read access and make sure your Git is signed in to GitHub. CI needs the same access to check out submodules.
+This repository is private. Ask the [NSES maintainer](#maintainer) for read access and make sure your Git is signed in to GitHub. CI needs the same access to check out submodules.
 
 **Claude Code does not seem to follow the standards.**  
 Check that the `@` import lines in `CLAUDE.md` are on their own lines and not inside a code block. Then run the checker: it reports any import that does not resolve. In Claude Code, run `/memory` to see which instruction files were loaded.
@@ -829,6 +830,18 @@ Do not silently ignore a MUST rule. Request an exception using [templates/except
 ## 11. For NSES maintainers
 
 This section is for people who change NSES itself, not for projects that consume it.
+
+### Maintainer
+
+| | |
+| --- | --- |
+| **Name** | Krishnadas P |
+| **Designation** | Tech Lead |
+| **Company** | NewAgeSysIT |
+| **Email** | [krish@newagesysit.com](mailto:krish@newagesysit.com) |
+| **GitHub** | [krishsmb](https://github.com/krishsmb) |
+
+Contact the maintainer for repository access, exception approvals, questions about a rule, or proposals for a new profile. For changes, open a pull request.
 
 ### Validating changes
 
