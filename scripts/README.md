@@ -80,7 +80,7 @@ node scripts/check-project-compliance.js /path/to/project --standards-path vendo
 
 The checker reports on the following:
 
-- **Technology stack**, detected from `package.json`. Next.js, NestJS, React and TypeScript are supported, and React is not reported separately in a Next.js app.
+- **Technology stack**, detected from `package.json`. Next.js, NestJS, React and TypeScript are supported, and React is not reported separately in a Next.js app. In a monorepo, run the checker from the repository root: it also reads every workspace package declared in the root `package.json` (`workspaces`, npm or Yarn) or in `pnpm-workspace.yaml`, evaluates each package on its own and reports where each stack was found. Workspace patterns support literal paths and a trailing `/*` or `/**` (one level of folders).
 - **NSES installation.** It checks whether NSES is a registered submodule and whether the submodule has been initialized. It also reports the `VERSION` and what the checkout is pinned to (tag, branch or commit), read from git metadata without running git.
 - **`CLAUDE.md`.** It checks the `ENTRY.md` import, the profile imports, and whether nested imports resolve all the way into NSES. It also detects template text that was never customized.
 - **`AGENTS.md`.** It checks the `ENTRY.md` reference, the profile references, and whether every referenced NSES path resolves.

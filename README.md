@@ -1,6 +1,6 @@
 # NSES — NewAgeSysIT Engineering Standards
 
-**Version:** 1.3.0  
+**Version:** 1.3.1  
 **Status:** Initial baseline  
 **Distribution:** Git submodule  
 **Supported stacks:** Next.js, NestJS, React (TypeScript / Node.js)  
@@ -41,7 +41,7 @@ NSES lives in its own Git repository. Your project includes it as a **Git submod
 ```text
 your-project/
 ├── .engineering/
-│   └── standards/        ← NSES (this repository, pinned to a release such as v1.3.0)
+│   └── standards/        ← NSES (this repository, pinned to a release such as v1.3.1)
 ├── CLAUDE.md             ← tells Claude Code to load NSES
 ├── AGENTS.md             ← tells other AI agents to read NSES
 ├── package.json
@@ -84,7 +84,7 @@ flowchart LR
 
 ## 2. Choose your profile
 
-Pick the profile that matches what your project is built with. The compliance checker detects this from your `package.json`.
+Pick the profile that matches what your project is built with. The compliance checker detects this from your `package.json`; in a monorepo it also reads each workspace package.
 
 | Your project is… | Use this profile | Detected when `package.json` has |
 | --- | --- | --- |
@@ -111,11 +111,11 @@ Run this from your project's root folder:
 ```bash
 git submodule add https://github.com/NewAgeSMB-Team4/newagesysit-engineering-standards.git .engineering/standards
 cd .engineering/standards
-git checkout v1.3.0
+git checkout v1.3.1
 cd ../..
 ```
 
-This downloads NSES into `.engineering/standards` and pins it to release `v1.3.0`. Always pin a release tag. Never follow `main`, because it can change under you.
+This downloads NSES into `.engineering/standards` and pins it to release `v1.3.1`. Always pin a release tag. Never follow `main`, because it can change under you.
 
 ### Step 2 — Add the AI instruction files
 
@@ -159,7 +159,7 @@ Fix any `FAIL` lines (see [section 6](#6-check-your-setup)), then commit:
 
 ```bash
 git add .gitmodules .engineering/standards CLAUDE.md AGENTS.md .gitignore .claude/settings.json
-git commit -m "chore: adopt NSES v1.3.0"
+git commit -m "chore: adopt NSES v1.3.1"
 ```
 
 ### Step 6 — Tell your team about cloning
@@ -586,6 +586,8 @@ Follow the task workflow and security rules in `ENTRY.md`. Never read or expose 
 
 You can also add a small `CLAUDE.md` inside `apps/web/` or `apps/api/` with app-specific commands. Claude Code reads it when working in that folder.
 
+**Checking a monorepo.** Run the checker from the repository root, where NSES and the shared `CLAUDE.md` live. It reads the workspaces declared in the root `package.json` (npm or Yarn) or in `pnpm-workspace.yaml`, finds the stack of each app (for example "Next.js in apps/web", "NestJS in apps/api") and fails if any of those stacks has no profile. Do not run it inside an app folder: NSES is not installed there.
+
 ### Block AI access to secrets
 
 The prompts above *ask* the assistant not to read secrets. Each AI tool also has a setting that **blocks** secret files outright, so the assistant cannot open them even if it ignores, forgets or is tricked out of those instructions. Set it up for every tool your team uses.
@@ -682,7 +684,7 @@ It checks:
 - that NSES is installed as a submodule and pinned to a release;
 - that `CLAUDE.md` imports `ENTRY.md` and the right profile, and that every import resolves;
 - that `AGENTS.md` references `ENTRY.md` and the right profile;
-- that the profile matches the stack detected from `package.json`;
+- that the profile matches the stack detected from `package.json` (in a monorepo, from every workspace package);
 - that recommended tooling is present (lint, typecheck, test and build scripts, ESLint, Prettier, strict TypeScript, CI, Dependabot or Renovate);
 - that `.gitignore` covers environment files;
 - that `.claude/settings.json` blocks Claude Code from reading `.env` files.
@@ -763,11 +765,11 @@ Updates are deliberate: your project stays on its pinned version until you choos
 ```bash
 cd .engineering/standards
 git fetch --tags
-git checkout v1.3.0          # replace with the release you are adopting
+git checkout v1.3.1          # replace with the release you are adopting
 cd ../..
 node .engineering/standards/scripts/check-project-compliance.js .
 git add .engineering/standards
-git commit -m "chore: update NSES to v1.3.0"
+git commit -m "chore: update NSES to v1.3.1"
 ```
 
 Versioning rules are in [adoption/versioning-and-governance.md](adoption/versioning-and-governance.md).
@@ -861,6 +863,6 @@ Use semantic versioning. Before tagging a release:
 
 1. Add a dated entry to [CHANGELOG.md](CHANGELOG.md), with a migration note if rules or tooling changed.
 2. Bump the version in `VERSION`, `package.json`, this `README.md` and `ENTRY.md` together. `npm run validate:standards` fails if they disagree.
-3. Confirm the validation workflow passes on `main`, then tag the release (for example `v1.3.0`).
+3. Confirm the validation workflow passes on `main`, then tag the release (for example `v1.3.1`).
 
 See [adoption/versioning-and-governance.md](adoption/versioning-and-governance.md) for the full policy.

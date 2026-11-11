@@ -157,22 +157,86 @@ function detectStack(ctx) {
     report.fail('STACK_PACKAGE_JSON_INVALID', 'package.json is not valid JSON.', { section, file: 'package.json' });
     return;
   }
-  const deps = { ...ctx.pkg.peerDependencies, ...ctx.pkg.devDependencies, ...ctx.pkg.dependencies };
+  const depsOf = (pkg) => ({ ...pkg?.peerDependencies, ...pkg?.devDependencies, ...pkg?.dependencies });
+  const deps = depsOf(ctx.pkg);
   ctx.deps = deps;
 
-  for (const [name, profile] of Object.entries(manifest.profiles ?? {})) {
-    const hit = (profile.detect?.dependencies ?? []).find((d) => d in deps);
-    const excluded = (profile.detect?.excludeIfDependencies ?? []).some((d) => d in deps);
-    if (hit && !excluded) {
-      ctx.stacks.push(name);
-      report.info('STACK_DETECTED', `Detected ${profile.displayName} (${hit} ${deps[hit]}).`, { section, file: 'package.json' });
+  // Evaluate each package on its own, so a Next.js app's `react` dependency is not reported as React.
+  const packages = [{ dir: null, deps }];
+  const workspaceDirs = findWorkspaceDirs(ctx);
+  for (const dir of workspaceDirs) {
+    try {
+      const wsRaw = read(`${dir}/package.json`);
+      if (wsRaw !== null) packages.push({ dir, deps: depsOf(JSON.parse(wsRaw)) });
+    } catch {
+      report.warn('STACK_WORKSPACE_PACKAGE_INVALID', `${dir}/package.json is not valid JSON; it was skipped.`, { section, file: `${dir}/package.json` });
     }
   }
-  ctx.typescript = 'typescript' in deps || exists(projectRoot, 'tsconfig.json');
+
+  for (const [name, profile] of Object.entries(manifest.profiles ?? {})) {
+    for (const { dir, deps: pkgDeps } of packages) {
+      const hit = (profile.detect?.dependencies ?? []).find((d) => d in pkgDeps);
+      const excluded = (profile.detect?.excludeIfDependencies ?? []).some((d) => d in pkgDeps);
+      if (!hit || excluded) continue;
+      if (!ctx.stacks.includes(name)) ctx.stacks.push(name);
+      const where = dir ? ` in ${dir}` : '';
+      report.info('STACK_DETECTED', `Detected ${profile.displayName} (${hit} ${pkgDeps[hit]})${where}.`, { section, file: dir ? `${dir}/package.json` : 'package.json' });
+    }
+  }
+  ctx.typescript = packages.some((p) => 'typescript' in p.deps) || exists(projectRoot, 'tsconfig.json');
   if (ctx.typescript) report.info('STACK_TYPESCRIPT', `TypeScript detected${deps.typescript ? ` (typescript ${deps.typescript})` : ''}.`, { section });
+  if (workspaceDirs.length) report.info('STACK_WORKSPACES', `Monorepo: checked ${workspaceDirs.length} workspace package(s) for the technology stack.`, { section });
   if (!ctx.stacks.length) report.warn('STACK_UNKNOWN', 'No supported framework (Next.js, NestJS, React) detected in package.json dependencies.', { section, file: 'package.json' });
   if (ctx.stacks.length > 1) report.info('STACK_MULTIPLE', `Multiple technologies detected (${ctx.stacks.join(', ')}). Reference each applicable profile.`, { section });
-  if (ctx.pkg.workspaces) report.info('STACK_WORKSPACES', 'package.json declares workspaces. Run this checker in each workspace package that has its own agent instructions.', { section });
+}
+
+/**
+ * Workspace package directories declared by package.json `workspaces` (npm, Yarn) or pnpm-workspace.yaml.
+ * shortcut: supports literal paths and a trailing `/*` or `/**` (one level of subfolders), which covers
+ * the usual apps/* and packages/* layouts; upgrade to full glob matching if deeper patterns appear.
+ */
+export function findWorkspaceDirs(ctx) {
+  const { read, projectRoot, pkg } = ctx;
+  const patterns = Array.isArray(pkg?.workspaces) ? [...pkg.workspaces] : [...(pkg?.workspaces?.packages ?? [])];
+  patterns.push(...pnpmWorkspacePatterns(read('pnpm-workspace.yaml') ?? ''));
+
+  const dirs = new Set();
+  for (const raw of patterns) {
+    if (typeof raw !== 'string' || raw.startsWith('!')) continue;
+    for (const dir of expandWorkspacePattern(projectRoot, raw.replace(/^\.\//, '').replace(/\/$/, ''))) {
+      if (dir && dir !== '.' && isInside(projectRoot, path.resolve(projectRoot, dir))) dirs.add(dir);
+    }
+  }
+  return [...dirs].sort((a, b) => a.localeCompare(b));
+}
+
+/** The list items under the top-level `packages:` key of pnpm-workspace.yaml. */
+export function pnpmWorkspacePatterns(yaml) {
+  const out = [];
+  let inPackages = false;
+  for (const line of yaml.split(/\r?\n/)) {
+    if (/^\S/.test(line)) {
+      inPackages = line.startsWith('packages:');
+      continue;
+    }
+    const item = line.trim();
+    if (!inPackages || !item.startsWith('-')) continue;
+    const value = item.slice(1).split('#')[0].trim().replace(/^['"]/, '').replace(/['"]$/, '');
+    if (value) out.push(value);
+  }
+  return out;
+}
+
+function expandWorkspacePattern(projectRoot, pattern) {
+  if (!pattern.includes('*')) return [pattern];
+  if (!pattern.endsWith('/*') && !pattern.endsWith('/**')) return [];
+  const base = pattern.slice(0, pattern.lastIndexOf('/'));
+  if (base.includes('*')) return [];
+  const parent = path.resolve(projectRoot, base);
+  if (!isInside(projectRoot, parent) || !statSafe(parent)?.isDirectory()) return [];
+  return fs.readdirSync(parent, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && e.name !== 'node_modules' && !e.name.startsWith('.'))
+    .map((e) => `${base}/${e.name}`);
 }
 
 function checkNses(ctx) {
