@@ -2,7 +2,7 @@
 
 **Company:** NewAgeSysIT  
 **Framework:** NewAgeSysIT Engineering Standards (NSES)  
-**Version:** 1.3.1
+**Version:** 1.3.2
 
 This is the central index for engineers and AI coding assistants consuming NSES. Identify the technologies used by the project and task, then load the matching profile under `profiles/`. Profiles import the applicable detailed standards. Do not load unrelated framework guidance unless the task crosses those boundaries.
 
