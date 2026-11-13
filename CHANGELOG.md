@@ -2,6 +2,14 @@
 
 All notable changes to NSES are documented here.
 
+## [Unreleased]
+
+### Changed
+- The repository is now public under the MIT license (`LICENSE`). Projects no longer need a GitHub token, deploy key or access request to add NSES or to check out the submodule in CI.
+
+### Migration notes
+- Optional: remove any token or deploy key a project set up only to check out the NSES submodule.
+
 ## [1.3.1] - 2026-11-11
 
 ### Fixed

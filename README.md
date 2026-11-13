@@ -2,7 +2,8 @@
 
 **Version:** 1.3.1  
 **Status:** Initial baseline  
-**Distribution:** Git submodule  
+**Distribution:** Git submodule (public repository)  
+**License:** [MIT](LICENSE)  
 **Supported stacks:** Next.js, NestJS, React (TypeScript / Node.js)  
 **Maintainer:** Krishnadas P, Tech Lead, NewAgeSysIT ([contact](#maintainer))
 
@@ -102,7 +103,7 @@ Pick the profile that matches what your project is built with. The compliance ch
 
 Use this when you are starting a project from scratch. It takes about 10 minutes.
 
-**You need:** Git, Node.js 22 or later, and read access to this GitHub repository.
+**You need:** Git and Node.js 22 or later. The repository is public, so no GitHub token or access request is needed.
 
 ### Step 1 — Add the submodule
 
@@ -782,7 +783,7 @@ Versioning rules are in [adoption/versioning-and-governance.md](adoption/version
 The submodule was not downloaded. Run `git submodule update --init`.
 
 **`git submodule add` asks for credentials or says "repository not found".**  
-This repository is private. Ask the [NSES maintainer](#maintainer) for read access and make sure your Git is signed in to GitHub. CI needs the same access to check out submodules.
+The repository is public, so this means the URL is wrong. Copy the exact HTTPS URL from [Step 1](#step-1--add-the-submodule) and check `.gitmodules` for a typo. Projects that added NSES while it was private can remove any token or deploy key they set up only for this submodule.
 
 **Claude Code does not seem to follow the standards.**  
 Check that the `@` import lines in `CLAUDE.md` are on their own lines and not inside a code block. Then run the checker: it reports any import that does not resolve. In Claude Code, run `/memory` to see which instruction files were loaded.
@@ -843,7 +844,7 @@ This section is for people who change NSES itself, not for projects that consume
 | **Email** | [krish@newagesysit.com](mailto:krish@newagesysit.com) |
 | **GitHub** | [krishsmb](https://github.com/krishsmb) |
 
-Contact the maintainer for repository access, exception approvals, questions about a rule, or proposals for a new profile. For changes, open a pull request.
+Contact the maintainer for exception approvals, questions about a rule, or proposals for a new profile. For changes, open a pull request.
 
 ### Validating changes
 
