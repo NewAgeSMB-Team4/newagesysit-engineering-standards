@@ -1,6 +1,6 @@
 # NSES — NewAgeSysIT Engineering Standards
 
-**Version:** 1.3.1  
+**Version:** 1.3.2  
 **Status:** Initial baseline  
 **Distribution:** Git submodule (public repository)  
 **License:** [MIT](LICENSE)  
@@ -42,7 +42,7 @@ NSES lives in its own Git repository. Your project includes it as a **Git submod
 ```text
 your-project/
 ├── .engineering/
-│   └── standards/        ← NSES (this repository, pinned to a release such as v1.3.1)
+│   └── standards/        ← NSES (this repository, pinned to a release such as v1.3.2)
 ├── CLAUDE.md             ← tells Claude Code to load NSES
 ├── AGENTS.md             ← tells other AI agents to read NSES
 ├── package.json
@@ -112,11 +112,11 @@ Run this from your project's root folder:
 ```bash
 git submodule add https://github.com/NewAgeSMB-Team4/newagesysit-engineering-standards.git .engineering/standards
 cd .engineering/standards
-git checkout v1.3.1
+git checkout v1.3.2
 cd ../..
 ```
 
-This downloads NSES into `.engineering/standards` and pins it to release `v1.3.1`. Always pin a release tag. Never follow `main`, because it can change under you.
+This downloads NSES into `.engineering/standards` and pins it to release `v1.3.2`. Always pin a release tag. Never follow `main`, because it can change under you.
 
 ### Step 2 — Add the AI instruction files
 
@@ -160,7 +160,7 @@ Fix any `FAIL` lines (see [section 6](#6-check-your-setup)), then commit:
 
 ```bash
 git add .gitmodules .engineering/standards CLAUDE.md AGENTS.md .gitignore .claude/settings.json
-git commit -m "chore: adopt NSES v1.3.1"
+git commit -m "chore: adopt NSES v1.3.2"
 ```
 
 ### Step 6 — Tell your team about cloning
@@ -766,11 +766,11 @@ Updates are deliberate: your project stays on its pinned version until you choos
 ```bash
 cd .engineering/standards
 git fetch --tags
-git checkout v1.3.1          # replace with the release you are adopting
+git checkout v1.3.2          # replace with the release you are adopting
 cd ../..
 node .engineering/standards/scripts/check-project-compliance.js .
 git add .engineering/standards
-git commit -m "chore: update NSES to v1.3.1"
+git commit -m "chore: update NSES to v1.3.2"
 ```
 
 Versioning rules are in [adoption/versioning-and-governance.md](adoption/versioning-and-governance.md).
@@ -864,6 +864,6 @@ Use semantic versioning. Before tagging a release:
 
 1. Add a dated entry to [CHANGELOG.md](CHANGELOG.md), with a migration note if rules or tooling changed.
 2. Bump the version in `VERSION`, `package.json`, this `README.md` and `ENTRY.md` together. `npm run validate:standards` fails if they disagree.
-3. Confirm the validation workflow passes on `main`, then tag the release (for example `v1.3.1`).
+3. Confirm the validation workflow passes on `main`, then tag the release (for example `v1.3.2`).
 
 See [adoption/versioning-and-governance.md](adoption/versioning-and-governance.md) for the full policy.
